@@ -13,22 +13,50 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return 'Home page';
-})->name('home.index');
+// Route::get('/', function () {
+//     return view('home.index', []);
+// })->name('home.index');
 
-Route::get('/contact', function () {
-    return 'Contact page';
-})->name('home.contact');
+// Route::get('/contact', function () {
+//     return view('home.contact');
+// })->name('home.contact');
 
-Route::get('/posts/{id}', function ($id) {
-    return 'Blog post ' . $id;
+Route::view('/', 'home.index')->name('home.index');
+Route::view('/contact', 'home.contact')->name('home.contact');
+
+$posts = [
+    1 => [
+        'title' => 'Introduction to Laravel',
+        'content' => 'This is a short introduction to Laravel',
+        'is_new' => true,
+        'has_comments' => true
+    ],
+    2 => [
+        'title' => 'Introduction to PHP',
+        'content' => 'This is a short introduction to PHP',
+        'is_new' => false
+    ],
+    3 => [
+        'title' => 'Introduction to Golang',
+        'content' => 'This is a short introduction to Go Language',
+        'is_new' => false
+    ]
+];
+
+Route::get('/posts', function () use ($posts) {
+    return view('posts.index', ['posts' => $posts]);
+});
+
+Route::get('/posts/{id}', function ($id) use ($posts) {
+
+    abort_if(!isset($posts[$id]), 404);
+
+    return view('posts.show', ['post' => $posts[$id]]);
 })
     // ->where([
     //     'id' => '[0-9]+'
     // ])
     ->name('posts.show');
-
 
 
 Route::get('/recent-posts/{days_ago?}', function ($daysAgo = 20) {
