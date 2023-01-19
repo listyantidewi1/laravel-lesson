@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\AboutController;
+use App\Http\Controllers\PostsController;;
+
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
@@ -22,9 +26,8 @@ use Illuminate\Http\Request;
 //     return view('home.contact');
 // })->name('home.contact');
 
-Route::view('/', 'home.index')->name('home.index');
-Route::view('/contact', 'home.contact')->name('home.contact');
 
+//dummy data
 $posts = [
     1 => [
         'title' => 'Introduction to Laravel',
@@ -44,23 +47,35 @@ $posts = [
     ]
 ];
 
-Route::get('/posts', function () use ($posts) {
-    //dd(request()->all());
-    //input will look for the names of all possible inputs. query will look for a specific query parameter
-    dd((int)request()->query('page',1));
-    return view('posts.index', ['posts' => $posts]);
-});
+//multiple action controller
+Route::get('/', [HomeController::class, 'home'])->name('home.index');
+Route::get('/contact', [HomeController::class, 'contact'])->name('home.contact');
 
-Route::get('/posts/{id}', function ($id) use ($posts) {
+//single action controller
+Route::get('/single', AboutController::class);
 
-    abort_if(!isset($posts[$id]), 404);
 
-    return view('posts.show', ['post' => $posts[$id]]);
-})
-    // ->where([
-    //     'id' => '[0-9]+'
-    // ])
-    ->name('posts.show');
+
+//implementing route for resource controller, only for index and show methods
+Route::resource('posts', PostsController::class)->only('index', 'show');
+
+// Route::get('/posts', function () use ($posts) {
+//     //dd(request()->all());
+//     //input will look for the names of all possible inputs. query will look for a specific query parameter
+//     dd((int)request()->query('page', 1));
+//     return view('posts.index', ['posts' => $posts]);
+// });
+
+// Route::get('/posts/{id}', function ($id) use ($posts) {
+
+//     abort_if(!isset($posts[$id]), 404);
+
+//     return view('posts.show', ['post' => $posts[$id]]);
+// })
+//     // ->where([
+//     //     'id' => '[0-9]+'
+//     // ])
+//     ->name('posts.show');
 
 
 Route::get('/recent-posts/{days_ago?}', function ($daysAgo = 20) {
@@ -72,9 +87,9 @@ Route::get('/recent-posts/{days_ago?}', function ($daysAgo = 20) {
 // });
 
 //group routes which have the same prefix
-Route::prefix('/fun')->name('fun.')->group(function () use ($posts){
+Route::prefix('/fun')->name('fun.')->group(function () use ($posts) {
     //learn to display response as json
-    Route::get('responses', function() use($posts) {
+    Route::get('responses', function () use ($posts) {
         return response($posts, 201)
             ->header('Content-Type', 'application/json')
             ->cookie('MY_COOKIE', 'listyantidewi', 3600);
@@ -103,14 +118,12 @@ Route::prefix('/fun')->name('fun.')->group(function () use ($posts){
 
 
     //return a json response
-    Route::get('json', function () use($posts) {
+    Route::get('json', function () use ($posts) {
         return response()->json($posts);
     })->name('json');
 
     //returning file download
-    Route::get('/fun/download', function () use($posts)
-    {
-        return response()->download(public_path('/PHOTOKU.png'),'portrait.jpg');
+    Route::get('/fun/download', function () use ($posts) {
+        return response()->download(public_path('/PHOTOKU.png'), 'portrait.jpg');
     })->name('download');
-
 });
