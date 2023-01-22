@@ -7,5 +7,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class BlogPost extends Model
 {
+    //mass assignment, turn on fillable
+    protected $fillable = ['title', 'content'];
+
+
     use HasFactory;
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePost;
 use App\Models\BlogPost;
 use Illuminate\Http\Request;
 
@@ -51,6 +52,7 @@ class PostsController extends Controller
     public function create()
     {
         //
+        return view('posts.create');
     }
 
     /**
@@ -59,9 +61,29 @@ class PostsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StorePost $request)
     {
-        //
+        //see if we can see the route correctly when sending the request
+        //dd($request);
+
+        //validate the data from the StorePost
+        $validated = $request->validated();
+        //store data in the database
+        $post = BlogPost::create($validated);
+        //read the data from the validated data
+        // $post->title = $validated['title'];
+        // $post->content = $validated['content'];
+        // $post->save();
+
+        //mass assignment
+        // $post2 = BlogPost::create(); //will create a new model instance and try to save to the database, so no need to call save()
+        // $post2 = BlogPost::make(); //will create a new model instance but will not try to save to the database, and need to call save() to store to the database
+
+        //flash message
+        $request->session()->flash('status', 'The blog post has been successfully saved');
+
+        //redirect the user to the blog post page after a successful store
+        return redirect()->route('posts.show', ['post' => $post->id]);
     }
 
     /**
