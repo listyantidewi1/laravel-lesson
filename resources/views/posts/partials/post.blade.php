@@ -1,14 +1,10 @@
-@if($loop->even)
-<div>{{ $key }}. {{ $post->title }}</div>
-@else
-<div style="background-color: rgb(220, 255, 163)">{{ $key }}. {{ $post->title }}</div>
-@endif
-
-<div>
-    <form action="{{ route('posts.destroy', ['post' => $post->id ]) }} " method="POST">
+<a href="{{ route('posts.show', ['post' => $post->id]) }}"><h3>{{ $post->title }}</h3></a>
+<div class="mb-3">
+    <a href="{{ route('posts.edit', ['post' => $post->id]) }}" class="btn btn-warning">Edit</a>
+    <form class="d-inline" action="{{ route('posts.destroy', ['post' => $post->id ]) }} " method="POST">
         @csrf
         @method('DELETE')
-        <input type="submit" value="Delete!" />
+        <input class="btn btn-danger" type="submit" value="Delete!" />
 
     </form>
 </div>

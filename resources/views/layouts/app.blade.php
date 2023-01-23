@@ -10,13 +10,36 @@
     <title>Laravel App - @yield('title')</title>
 </head>
 <body>
-    <div>
+    <div class="container p-3 bg-white border-bottom shadow-sm mb-3">
+        <div class="row">
+            <div class="col-lg-2 text-center">
+                <h5 class="my-0 mr-md-auto font-weight-normal">Personal blog</h5>
+            </div>
+            <div class="col-lg-5 p-0 mb-0"></div>
+            <div class="col-lg-5 text-center">
+                <nav class="my-2 my-md-0 mr-md-3">
+                    <a class="p-2 text-dark text-decoration-none" href="{{ route('home.index') }}">Home</a>
+                    <a class="p-2 text-dark text-decoration-none" href="{{ route('home.contact') }}">Contact</a>
+                    <a class="p-2 text-dark text-decoration-none" href="{{ route('posts.index') }}">Blog Posts</a>
+                    <a class="p-2 text-dark text-decoration-none" href="{{ route('posts.create') }}">Add Blog Post</a>
+                </nav>
+            </div>
+        </div>
+    </div>
+    {{-- <div class="d-flex flex-column flex-md-row align-items-center p-3 px-md-4 bg-white border-bottom shadow-sm mb-3">
+
+
+    </div> --}}
+    <div class="container">
         @if(session('status'))
-            <div style="background: tomato; color: white">
+            <div class="alert alert-success">
                 {{ session('status') }}
             </div>
         @endif
         @yield('content')
     </div>
+    {{-- <div class="container-fluid p-3 bg-dark text-white">
+        <p>This is a footer</p>
+    </div> --}}
 </body>
 </html>
